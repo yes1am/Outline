@@ -1,4 +1,8 @@
+<h1> Github Markdown Outline Extension </h1>
+
 A New Github Markdown Outline Extension, Inspired by [Github Markdown Outline Extension](https://github.com/dbkaplun/github-markdown-outline-extension)
+
+![Screenshot](https://user-images.githubusercontent.com/25051945/71319931-912a5900-24df-11ea-9b1f-e3fede5bd472.png)
 
 ## 如何使用
 
