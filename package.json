@@ -1,0 +1,20 @@
+{
+  "name": "github-markdown-outline-extension",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yes1am/github-markdown-outline-extension.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yes1am/github-markdown-outline-extension/issues"
+  },
+  "homepage": "https://github.com/yes1am/github-markdown-outline-extension#readme"
+}

@@ -1,0 +1,52 @@
+.GITHUB_ISSUE_BLOG_EXTENSION_CONTAINER {
+  position: fixed;
+  right: 20px;
+  top: 80px;
+  width: 240px;
+  padding: 6px;
+  border-left: 3px solid #eee;
+  box-shadow: 0 4px 12px rgba(44, 190, 78, 0.4);
+  max-height: 600px;
+  background: #fff;
+  overflow: auto;
+  z-index: 999;
+}
+
+.GITHUB_ISSUE_BLOG_EXTENSION_CONTAINER div[class^="GITHUB_ISSUE_BLOG_EXTENSION_CLASS_"] {
+  line-height: 24px;
+  color: #555;
+  cursor: pointer;
+}
+
+.GITHUB_ISSUE_BLOG_EXTENSION_CONTAINER div[class^="GITHUB_ISSUE_BLOG_EXTENSION_CLASS_"]:hover {
+  border-bottom: 2px solid rgb(44, 190, 78);
+}
+
+.GITHUB_ISSUE_BLOG_EXTENSION_CONTAINER .GITHUB_ISSUE_BLOG_EXTENSION_CLASS_H1 {
+  font-weight: 800;
+}
+
+.GITHUB_ISSUE_BLOG_EXTENSION_CONTAINER .GITHUB_ISSUE_BLOG_EXTENSION_CLASS_H2 {
+  padding-left: 5px;
+  font-weight: 700;
+}
+
+.GITHUB_ISSUE_BLOG_EXTENSION_CONTAINER .GITHUB_ISSUE_BLOG_EXTENSION_CLASS_H3 {
+  padding-left: 10px;
+  font-weight: 600;
+}
+
+.GITHUB_ISSUE_BLOG_EXTENSION_CONTAINER .GITHUB_ISSUE_BLOG_EXTENSION_CLASS_H4 {
+  padding-left: 15px;
+  font-weight: 500;
+}
+
+.GITHUB_ISSUE_BLOG_EXTENSION_CONTAINER .GITHUB_ISSUE_BLOG_EXTENSION_CLASS_H5 {
+  padding-left: 20px;
+  font-weight: 400;
+}
+
+.GITHUB_ISSUE_BLOG_EXTENSION_CONTAINER .GITHUB_ISSUE_BLOG_EXTENSION_CLASS_H6 {
+  padding-left: 25px;
+  font-weight: 400;
+}
