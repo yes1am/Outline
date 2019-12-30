@@ -18,7 +18,7 @@ function getEleDataTopAttribute(ele) {
     }
     return Number(result);
 }
-function main(root) {
+function generateDom(root) {
     var document = root.document;
     var markdownBody = document.querySelector(GITHUB_MARKDOWN_BODY_CLASS);
     if (!markdownBody) {
@@ -38,6 +38,12 @@ function main(root) {
             top: getOffsetToDocumentTop(header)
         });
     });
+    var prevContainer = document.querySelector("." + CONTAINER_ID);
+    if (!!prevContainer) {
+        // if already exist
+        prevContainer.parentNode.removeChild(prevContainer);
+        prevContainer = null;
+    }
     var container = document.createElement('div');
     container.classList.add(CONTAINER_ID);
     var fragment = document.createDocumentFragment();
@@ -69,8 +75,20 @@ function getEnable(callback) {
         }
     });
 }
-getEnable(function (enabled) {
-    if (enabled) {
-        main(this);
-    }
-});
+function main() {
+    getEnable(function (enabled) {
+        if (enabled) {
+            generateDom(this);
+        }
+    });
+    // support pjax: 
+    // pjax events fire order: pjax:start, pjax:success, pjax:complete, pjax:end
+    document.addEventListener("pjax:end", function () {
+        getEnable(function (enabled) {
+            if (enabled) {
+                generateDom(this);
+            }
+        });
+    });
+}
+main();

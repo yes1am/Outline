@@ -33,8 +33,9 @@ function getEleDataTopAttribute(ele: HTMLElement):number {
   return Number(result)
 }
 
-function main(root: any) {
+function generateDom(root: any) {
   const document = root.document
+
   const markdownBody = document.querySelector(GITHUB_MARKDOWN_BODY_CLASS)
   if (!markdownBody) {
     console.log('this extension only works in github page with markdown, exit')
@@ -47,8 +48,6 @@ function main(root: any) {
     return
   }
 
-
-
   const headersInfos:HeaderInfo[] = []
 
   Array.from(headers).forEach(function (header: HTMLDivElement) {
@@ -58,6 +57,13 @@ function main(root: any) {
       top: getOffsetToDocumentTop(header)
     })
   })
+
+  let prevContainer = document.querySelector(`.${CONTAINER_ID}`);
+  if(!!prevContainer) {
+    // if already exist
+    prevContainer.parentNode.removeChild(prevContainer);
+    prevContainer = null;
+  }
 
   const container = document.createElement('div')
   container.classList.add(CONTAINER_ID)
@@ -94,8 +100,24 @@ function getEnable(callback?:(enabled:boolean) => void):void {
   })
 }
 
-getEnable(function (this: Window,enabled){
-  if (enabled) {
-    main(this)
-  }
-})
+function main() {
+  getEnable(function (this: Window,enabled){
+    if (enabled) {
+      generateDom(this)
+    }
+  })
+
+  // support pjax: 
+  // pjax events fire order: pjax:start, pjax:success, pjax:complete, pjax:end
+  document.addEventListener("pjax:end", function() {
+    getEnable(function (this: Window,enabled){
+      if (enabled) {
+        generateDom(this)
+      }
+    })
+  })
+}
+
+main()
+
+
