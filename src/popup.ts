@@ -4,6 +4,9 @@ interface StorageItem {
 
 declare var chrome: any;
 
+const EXTENSION_ENABLED_TEXT = '插件已启用 (点击关闭)';
+const EXTENSION_DISABLED_TEXT = '插件已关闭 (点击启用)';
+
 function getEnableFun (callback?:(enabled:boolean) => void): void {
   // get enabled, default value is true
   chrome.storage.sync.get({ enabled: true }, function (item: StorageItem) {
@@ -34,14 +37,14 @@ if(enableBtn) {
         setEnable(false, () => {
           // remove class and change html
           enableBtn.classList.remove('item-select')
-          enableBtn.innerHTML = '插件已关闭 (点击启用)'
+          enableBtn.innerHTML = EXTENSION_DISABLED_TEXT
         })
       } else {
         // if storage is false, click change into true
         setEnable(true, () => {
           // add class and change html
           enableBtn.classList.add('item-select')
-          enableBtn.innerHTML = '插件已启用 (点击关闭)'
+          enableBtn.innerHTML = EXTENSION_ENABLED_TEXT
         })
       }
     })
@@ -51,10 +54,10 @@ if(enableBtn) {
     getEnableFun((enabled) => {
       if (enabled) {
         enableBtn!.classList.add('item-select')
-        enableBtn!.innerHTML = '插件已启用 (点击关闭)'
+        enableBtn!.innerHTML = EXTENSION_ENABLED_TEXT
       } else {
         enableBtn!.classList.remove('item-select')
-        enableBtn!.innerHTML = '插件已关闭 (点击启用)'
+        enableBtn!.innerHTML = EXTENSION_DISABLED_TEXT
       }
     })
   }

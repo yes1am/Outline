@@ -18,8 +18,17 @@ function getEleDataTopAttribute(ele) {
     }
     return Number(result);
 }
+function removeContainerIfAlreadyExist() {
+    var prevContainer = document.querySelector("." + CONTAINER_ID);
+    if (!!prevContainer && prevContainer.parentNode) {
+        // if already exist
+        prevContainer.parentNode.removeChild(prevContainer);
+        prevContainer = null;
+    }
+}
 function generateDom(root) {
     var document = root.document;
+    removeContainerIfAlreadyExist();
     var markdownBody = document.querySelector(GITHUB_MARKDOWN_BODY_CLASS);
     if (!markdownBody) {
         console.log('this extension only works in github page with markdown, exit');
@@ -38,12 +47,6 @@ function generateDom(root) {
             top: getOffsetToDocumentTop(header)
         });
     });
-    var prevContainer = document.querySelector("." + CONTAINER_ID);
-    if (!!prevContainer) {
-        // if already exist
-        prevContainer.parentNode.removeChild(prevContainer);
-        prevContainer = null;
-    }
     var container = document.createElement('div');
     container.classList.add(CONTAINER_ID);
     var fragment = document.createDocumentFragment();

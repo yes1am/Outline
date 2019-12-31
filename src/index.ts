@@ -33,8 +33,19 @@ function getEleDataTopAttribute(ele: HTMLElement):number {
   return Number(result)
 }
 
+function removeContainerIfAlreadyExist() {
+  let prevContainer = document.querySelector(`.${CONTAINER_ID}`);
+  if(!!prevContainer && prevContainer.parentNode) {
+    // if already exist
+    prevContainer.parentNode.removeChild(prevContainer);
+    prevContainer = null;
+  }
+}
+
 function generateDom(root: any) {
   const document = root.document
+
+  removeContainerIfAlreadyExist()
 
   const markdownBody = document.querySelector(GITHUB_MARKDOWN_BODY_CLASS)
   if (!markdownBody) {
@@ -57,13 +68,6 @@ function generateDom(root: any) {
       top: getOffsetToDocumentTop(header)
     })
   })
-
-  let prevContainer = document.querySelector(`.${CONTAINER_ID}`);
-  if(!!prevContainer) {
-    // if already exist
-    prevContainer.parentNode.removeChild(prevContainer);
-    prevContainer = null;
-  }
 
   const container = document.createElement('div')
   container.classList.add(CONTAINER_ID)
