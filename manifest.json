@@ -17,9 +17,10 @@
 		"default_popup": "./built/popup.html"
 	},
   "content_scripts": [{
-    "matches": ["https://github.com/*"],
+    "matches": ["<all_urls>"],
     "js": ["./built/index.js"],
-    "css": ["./built/css/index.css"]
+    "css": ["./built/css/index.css"],
+    "run_at": "document_start"
   }],
   "permissions": [
     "storage"

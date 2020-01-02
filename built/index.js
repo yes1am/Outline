@@ -1,12 +1,29 @@
+var HEADER_CLASS_PREFIX = 'CHROME_OUTLINE_EXTENSION_CLASS';
+var CONTAINER_ID = 'CHROME_OUTLINE_EXTENSION_CONTAINER';
 var HEADER_SELECTOR_STRING = 'h1,h2,h3,h4,h5,h6';
-var GITHUB_MARKDOWN_BODY_CLASS = '.markdown-body';
-var HEADER_CLASS_PREFIX = 'GITHUB_ISSUE_BLOG_EXTENSION_CLASS';
-var CONTAINER_ID = 'GITHUB_ISSUE_BLOG_EXTENSION_CONTAINER';
-// in issues page, the issues title will be sticky, so we need to minus its height
-function isIssuesPage() {
-    return window.location.href.includes('/issues/');
-}
-var GITHUB_STICKY_HEIGHT = isIssuesPage() ? 60 : 0;
+var CONFIG_SITES = [
+    {
+        urlRegExp: /^https\:\/\/github\.com/,
+        markdownBodySelector: '.markdown-body',
+        stickyHeight: 0,
+    },
+    {
+        urlRegExp: /^https\:\/\/github\.com\/.*\/issues/,
+        markdownBodySelector: '.markdown-body',
+        // in issues page, the issues title will be sticky, so we need to minus its height
+        stickyHeight: 60,
+    },
+    {
+        urlRegExp: /https\:\/\/confluence\.shopee\.io\/pages\/viewpage\.action/,
+        markdownBodySelector: '#main-content',
+        stickyHeight: 100
+    },
+    {
+        urlRegExp: /https\:\/\/www\.cnblogs\.com\/.*\.html/,
+        markdownBodySelector: '#cnblogs_post_body',
+        stickyHeight: 0
+    },
+];
 function getOffsetToDocumentTop(ele) {
     return ele.getBoundingClientRect().top + document.documentElement.scrollTop;
 }
@@ -27,16 +44,27 @@ function removeContainerIfAlreadyExist() {
     }
 }
 function generateDom(root) {
-    var document = root.document;
     removeContainerIfAlreadyExist();
-    var markdownBody = document.querySelector(GITHUB_MARKDOWN_BODY_CLASS);
+    var currentSite = window.location.href;
+    var matchedSite = null;
+    CONFIG_SITES.forEach(function (site) {
+        if (site.urlRegExp.test(currentSite)) {
+            matchedSite = site;
+        }
+    });
+    if (!matchedSite) {
+        console.debug('chrome outline extension fail, no config');
+        return;
+    }
+    var document = root.document;
+    var markdownBody = document.querySelector(matchedSite.markdownBodySelector);
     if (!markdownBody) {
-        console.log('this extension only works in github page with markdown, exit');
+        console.debug("chrome outline extension fail, no " + matchedSite.markdownBodySelector + " found");
         return;
     }
     var headers = markdownBody.querySelectorAll(HEADER_SELECTOR_STRING);
     if (!headers) {
-        console.log('cant find header tag, exit');
+        console.debug("chrome outline extension fail, no header tag under " + matchedSite.markdownBodySelector);
         return;
     }
     var headersInfos = [];
@@ -63,7 +91,7 @@ function generateDom(root) {
         var target = e.target;
         if (target) {
             var top_1 = getEleDataTopAttribute(target);
-            document.documentElement.scrollTop = top_1 - GITHUB_STICKY_HEIGHT;
+            document.documentElement.scrollTop = top_1 - matchedSite.stickyHeight;
         }
     });
     container.appendChild(fragment);
@@ -94,4 +122,6 @@ function main() {
         });
     });
 }
-main();
+window.addEventListener('load', function () {
+    main();
+});
