@@ -340,7 +340,7 @@ function generateDom(root: any) {
   }
 
   const headers = markdownBody.querySelectorAll(HEADER_SELECTOR_STRING)
-  if (!headers) {
+  if (!headers.length) {
     console.debug(`chrome outline extension fail, no header tag under ${matchedSite!.markdownBodySelector}`);
     return
   }
