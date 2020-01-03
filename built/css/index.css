@@ -1,15 +1,72 @@
 .CHROME_OUTLINE_EXTENSION_CONTAINER {
   position: fixed;
-  right: 20px;
-  top: 80px;
+  right: 0;
+  top: 100px;
   width: 240px;
+  height: 500px;
+  box-sizing: border-box;
+  background: #fafbfc;
+  overflow: visible;
+  padding-bottom: 6px;
+  border-left: 1px solid rgb(87, 181, 208);
+  border-bottom: 1px solid rgb(87, 181, 208);
+  z-index: 999999999;
+  transform: translate3d(100%, 0, 0);
+  transition: transform 0.3s ease-in;
+  display: flex;
+  flex-direction: column;
+}
+
+.CHROME_OUTLINE_EXTENSION_CONTAINER.CHROME_OUTLINE_EXTENSION_ACTIVE {
+  transform: translate3d(0, 0, 0);
+}
+
+.CHROME_OUTLINE_EXTENSION_CONTAINER .CHROME_OUTLINE_EXTENSION_TOGGLE {
+  writing-mode: tb;
+  background: #fafbfc;
+  border-radius: 50%;
+  border-width: 2px 0 2px 2px;
+  border-style: solid none solid solid;
+  border-color: rgb(87, 181, 208);
+  padding: 4px;
+  position: absolute;
+  right: 240px;
+  top: 33%;
+  color: rgb(15, 46, 71);
+  cursor: pointer;
+}
+
+.CHROME_OUTLINE_EXTENSION_CONTAINER .CHROME_OUTLINE_EXTENSION_TOGGLE img {
+  width: 30px;
+}
+
+.CHROME_OUTLINE_EXTENSION_CONTAINER .CHROME_OUTLINE_EXTENSION_HEADER {
+  flex: 0 0 48px;
+  font-size: 24px;
+  line-height: 48px;
+  text-align: center;
+  color: #fff;
+  background: rgb(87, 181, 208);
+}
+
+.CHROME_OUTLINE_EXTENSION_CONTAINER .CHROME_OUTLINE_EXTENSION_HEADER a,
+.CHROME_OUTLINE_EXTENSION_CONTAINER .CHROME_OUTLINE_EXTENSION_HEADER a:link,
+.CHROME_OUTLINE_EXTENSION_CONTAINER .CHROME_OUTLINE_EXTENSION_HEADER a:focus,
+.CHROME_OUTLINE_EXTENSION_CONTAINER .CHROME_OUTLINE_EXTENSION_HEADER a:hover,
+.CHROME_OUTLINE_EXTENSION_CONTAINER .CHROME_OUTLINE_EXTENSION_HEADER a:visited {
+  color: white
+}
+
+.CHROME_OUTLINE_EXTENSION_CONTAINER .CHROME_OUTLINE_EXTENSION_BODY {
+  background: #fafbfc;
   padding: 6px;
-  border-left: 3px solid #eee;
-  box-shadow: 0 4px 12px rgba(44, 190, 78, 0.4);
-  max-height: 600px;
-  background: #fff;
+  flex: 1 1 auto;
   overflow: auto;
-  z-index: 999;
+}
+
+.CHROME_OUTLINE_EXTENSION_CONTAINER .CHROME_OUTLINE_EXTENSION_FOOTER {
+  background: rgb(87, 181, 208);
+  /* flex: 0 0 30px; */
 }
 
 .CHROME_OUTLINE_EXTENSION_CONTAINER div[class^="CHROME_OUTLINE_EXTENSION_CLASS"] {
@@ -19,34 +76,34 @@
 }
 
 .CHROME_OUTLINE_EXTENSION_CONTAINER div[class^="CHROME_OUTLINE_EXTENSION_CLASS"]:hover {
-  border-bottom: 2px solid rgb(44, 190, 78);
+  border-bottom: 2px solid rgb(87, 181, 208);
 }
 
-.CHROME_OUTLINE_EXTENSION_CONTAINER .CHROME_OUTLINE_EXTENSION_CLASSH1 {
+.CHROME_OUTLINE_EXTENSION_CONTAINER .CHROME_OUTLINE_EXTENSION_CLASS_H1 {
   font-weight: 800;
 }
 
-.CHROME_OUTLINE_EXTENSION_CONTAINER .CHROME_OUTLINE_EXTENSION_CLASSH2 {
+.CHROME_OUTLINE_EXTENSION_CONTAINER .CHROME_OUTLINE_EXTENSION_CLASS_H2 {
   padding-left: 5px;
   font-weight: 700;
 }
 
-.CHROME_OUTLINE_EXTENSION_CONTAINER .CHROME_OUTLINE_EXTENSION_CLASSH3 {
+.CHROME_OUTLINE_EXTENSION_CONTAINER .CHROME_OUTLINE_EXTENSION_CLASS_H3 {
   padding-left: 10px;
   font-weight: 600;
 }
 
-.CHROME_OUTLINE_EXTENSION_CONTAINER .CHROME_OUTLINE_EXTENSION_CLASSH4 {
+.CHROME_OUTLINE_EXTENSION_CONTAINER .CHROME_OUTLINE_EXTENSION_CLASS_H4 {
   padding-left: 15px;
   font-weight: 500;
 }
 
-.CHROME_OUTLINE_EXTENSION_CONTAINER .CHROME_OUTLINE_EXTENSION_CLASSH5 {
+.CHROME_OUTLINE_EXTENSION_CONTAINER .CHROME_OUTLINE_EXTENSION_CLASS_H5 {
   padding-left: 20px;
   font-weight: 400;
 }
 
-.CHROME_OUTLINE_EXTENSION_CONTAINER .CHROME_OUTLINE_EXTENSION_CLASSH6 {
+.CHROME_OUTLINE_EXTENSION_CONTAINER .CHROME_OUTLINE_EXTENSION_CLASS_H6 {
   padding-left: 25px;
   font-weight: 400;
 }
