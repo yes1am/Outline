@@ -1,5 +1,5 @@
 {
-  "name": "github-markdown-outline-extension",
+  "name": "essay-outline",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,13 +8,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yes1am/github-markdown-outline-extension.git"
+    "url": "git+https://github.com/yes1am/essay-outline.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/yes1am/github-markdown-outline-extension/issues"
+    "url": "https://github.com/yes1am/essay-outline/issues"
   },
-  "homepage": "https://github.com/yes1am/github-markdown-outline-extension#readme"
+  "homepage": "https://github.com/yes1am/essay-outline#readme"
 }

@@ -1,0 +1,56 @@
+.containers {
+  width: 1180px;
+  margin: 0 auto;
+}
+
+div.title {
+  font-size: 26px;
+  color: #53637D;
+  padding: 10px 0;
+  height: 28px;
+  border-bottom: #eee 1px solid;
+  background-color: #FFF;
+}
+
+div.option-title {
+  width: 160px;
+  padding: 20px 5px;
+  float: left;
+  font-weight: bold;
+  color: #000;
+}
+
+div.option-content {
+  font-size: 13px !important;
+  padding: 20px 10px;
+  line-height: 20px;
+  margin-left: 180px;
+}
+
+div.option-content #config-area {
+  width: 600px;
+  height: 360px;
+}
+
+div.option-content button {
+  color: #fff;
+  background-color: #1890ff;
+  border-color: #1890ff;
+  line-height: 1.499;
+  height: 32px;
+  padding: 0 15px;
+  font-size: 14px;
+  font-weight: 400;
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+  text-align: center;
+  background-image: none;
+  border: none;
+  outline: none;
+  display: block;
+}
+
+div.option-content button:hover {
+  cursor: pointer;
+}

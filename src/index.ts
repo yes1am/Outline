@@ -6,10 +6,11 @@ interface HeaderInfo {
 
 interface StorageItem {
   enabled: boolean;
+  configSites: SiteItem [];
 }
 
 interface SiteItem {
-  urlRegExp: RegExp;
+  urlRegExp: String;
   markdownBodySelector: string;
   stickyHeight: number;
 }
@@ -260,40 +261,51 @@ Ke4QXxQXswYACgCAvouCfiPiCHGDuF1ME0+JF8Trzl/QK5zvxvPEFrFT7BHFosz57rxWNDoBHXVE
 nP+s1vnvlDn/mz3OP2OL889c7fw7Fjr/zhecn2Ga8zN9WXxWDGbOAPP9f1wo1PQDl+hvAAAAAElF
 TkSuQmCC'/>`
 
-const GITHUB_SOURCE_CODE_URL = 'https://github.com/yes1am/github-markdown-outline-extension';
-const HEADER_CLASS_PREFIX = 'CHROME_OUTLINE_EXTENSION_CLASS'
-const CONTAINER_ID = 'CHROME_OUTLINE_EXTENSION_CONTAINER'
-const CONTAINER_HEADER_CLASS = 'CHROME_OUTLINE_EXTENSION_HEADER'
-const CONTAINER_BODY_CLASS = 'CHROME_OUTLINE_EXTENSION_BODY'
-const CONTAINER_FOOTER_CLASS = 'CHROME_OUTLINE_EXTENSION_FOOTER'
-const TOGGLE_CLASS = 'CHROME_OUTLINE_EXTENSION_TOGGLE'
-const ACTIVE_CLASS = 'CHROME_OUTLINE_EXTENSION_ACTIVE'
+const GITHUB_SOURCE_CODE_URL = 'https://github.com/yes1am/essay-outline';
+const HEADER_CLASS_PREFIX = 'CHROME_ESSAY_OUTLINE_EXTENSION_CLASS'
+const CONTAINER_ID = 'CHROME_ESSAY_OUTLINE_EXTENSION_CONTAINER'
+const CONTAINER_HEADER_CLASS = 'CHROME_ESSAY_OUTLINE_EXTENSION_HEADER'
+const CONTAINER_BODY_CLASS = 'CHROME_ESSAY_OUTLINE_EXTENSION_BODY'
+const CONTAINER_FOOTER_CLASS = 'CHROME_ESSAY_OUTLINE_EXTENSION_FOOTER'
+const TOGGLE_CLASS = 'CHROME_ESSAY_OUTLINE_EXTENSION_TOGGLE'
+const ACTIVE_CLASS = 'CHROME_ESSAY_OUTLINE_EXTENSION_ACTIVE'
 const HEADER_SELECTOR_STRING = 'h1,h2,h3,h4,h5,h6'
+const TOGGLE_TEXT = 'essay-outline'
 let isActive = true;
 
-const CONFIG_SITES: SiteItem[] = [
+const DEFAULT_CONFIG_SITES: SiteItem[] = [
   {
-    urlRegExp: /^https\:\/\/github\.com/,
+    urlRegExp: "^https://github.com",
     markdownBodySelector: '.markdown-body',
     stickyHeight: 0,
   },
   {
-    urlRegExp: /^https\:\/\/github\.com\/.*\/issues/,
+    urlRegExp: "^https://github.com/.*/issues/",
     markdownBodySelector: '.markdown-body',
     // in issues page, the issues title will be sticky, so we need to minus its height
     stickyHeight: 60,
   },
   {
-    urlRegExp: /https\:\/\/confluence\.shopee\.io\/pages\/viewpage\.action/,
-    markdownBodySelector: '#main-content',
-    stickyHeight: 100
-  },
-  {
-    urlRegExp: /https\:\/\/www\.cnblogs\.com\/.*\.html/,
+    urlRegExp: "^https://www.cnblogs.com/.*.html/",
     markdownBodySelector: '#cnblogs_post_body',
     stickyHeight: 0
   },
+  {
+    "markdownBodySelector": ".Post-RichText",
+    "stickyHeight": 52,
+    "urlRegExp": "^https://zhuanlan.zhihu.com/p/"
+  }
 ]
+
+function getConfigSites(callback?: (configSites: SiteItem []) => void): void {
+  // get enabled, default value is true
+  chrome.storage.sync.get({ configSites: DEFAULT_CONFIG_SITES }, function (item: StorageItem) {
+    const { configSites } = item
+    if (callback) {
+      callback(configSites)
+    }
+  })
+}
 
 function getOffsetToDocumentTop(ele: HTMLElement): number {
   return ele.getBoundingClientRect().top + document.documentElement.scrollTop
@@ -321,98 +333,101 @@ function generateDom(root: any) {
   removeContainerIfAlreadyExist()
   const currentSite = window.location.href
   let matchedSite: SiteItem | null = null;
-  CONFIG_SITES.forEach(site => {
-    if (site.urlRegExp.test(currentSite)) {
-      matchedSite = site;
-    }
-  })
 
-  if (!matchedSite) {
-    console.debug('chrome outline extension fail, no config');
-    return;
-  }
-
-  const document = root.document
-  const markdownBody = document.querySelector(matchedSite!.markdownBodySelector)
-  if (!markdownBody) {
-    console.debug(`chrome outline extension fail, no ${matchedSite!.markdownBodySelector} found`);
-    return
-  }
-
-  const headers = markdownBody.querySelectorAll(HEADER_SELECTOR_STRING)
-  if (!headers.length) {
-    console.debug(`chrome outline extension fail, no header tag under ${matchedSite!.markdownBodySelector}`);
-    return
-  }
-
-  const headersInfos: HeaderInfo[] = []
-
-  Array.from(headers).forEach(function (header: HTMLDivElement) {
-    headersInfos.push({
-      html: header.innerHTML,
-      level: header.tagName,
-      top: getOffsetToDocumentTop(header)
+  getConfigSites((configSites) =>{
+    configSites.forEach(site => {
+      if (new RegExp(site.urlRegExp as string).test(currentSite)) {
+        matchedSite = site;
+      }
     })
-  })
-
-  const container = document.createElement('div')
-  container.classList.add(CONTAINER_ID)
-  if(isActive){
-    container.classList.add(ACTIVE_CLASS)
-  }
-  const fragment = document.createDocumentFragment()
-
-  // header
-  const containerHeader = document.createElement('div')
-  containerHeader.innerHTML = `<a href="${GITHUB_SOURCE_CODE_URL}" target="_blank">Outline Extension</a>`
-  containerHeader.classList.add(CONTAINER_HEADER_CLASS)
-
-  // body
-  const containerBody = document.createElement('div')
-  containerBody.classList.add(CONTAINER_BODY_CLASS)
-  let element: HTMLDivElement;
-  headersInfos.forEach(function ({ html, level, top }) {
-    element = document.createElement('div')
-    element.classList.add(`${HEADER_CLASS_PREFIX}_${level}`)
-    element.setAttribute('data-top', String(top))
-    element.innerHTML = html
-    containerBody.appendChild(element)
-  })
-
-  // footer
-  const containerFooter = document.createElement('div')
-  containerFooter.classList.add(CONTAINER_FOOTER_CLASS)
-
-  // toggle element
-  const toggle = document.createElement('div');
-  toggle.classList.add(TOGGLE_CLASS);
-  toggle.innerHTML = ICON_PNG_BASE64;
-
-  // append
-  fragment.appendChild(toggle)
-  fragment.appendChild(containerHeader)
-  fragment.appendChild(containerBody)
-  fragment.appendChild(containerFooter)
-
-  container.addEventListener('click', function (e: MouseEvent) {
-    const { target } = e
-    if (target) {
-      const top = getEleDataTopAttribute(target as HTMLElement)
-      document.documentElement.scrollTop = top - matchedSite!.stickyHeight
+    if (!matchedSite) {
+      console.debug('essay-outline extension fail, no config');
+      return;
     }
-  })
-  toggle.addEventListener('click', function (e: MouseEvent) {
-    e.stopPropagation();
-    if (isActive) {
-      container.classList.remove(ACTIVE_CLASS);
-    } else {
-      container.classList.add(ACTIVE_CLASS);
+  
+    const document = root.document
+    const markdownBody = document.querySelector(matchedSite!.markdownBodySelector)
+    if (!markdownBody) {
+      console.debug(`essay-outline extension fail, no ${matchedSite!.markdownBodySelector} found`);
+      return
     }
-    isActive = !isActive
-  })
-
-  container.appendChild(fragment)
-  document.body.appendChild(container)
+  
+    const headers = markdownBody.querySelectorAll(HEADER_SELECTOR_STRING)
+    if (!headers.length) {
+      console.debug(`essay-outline extension fail, no header tag under ${matchedSite!.markdownBodySelector}`);
+      return
+    }
+  
+    const headersInfos: HeaderInfo[] = []
+  
+    Array.from(headers).forEach(function (header: HTMLDivElement) {
+      headersInfos.push({
+        html: header.innerHTML,
+        level: header.tagName,
+        top: getOffsetToDocumentTop(header)
+      })
+    })
+  
+    const container = document.createElement('div')
+    container.classList.add(CONTAINER_ID)
+    if(isActive){
+      container.classList.add(ACTIVE_CLASS)
+    }
+    const fragment = document.createDocumentFragment()
+  
+    // header
+    const containerHeader = document.createElement('div')
+    containerHeader.innerHTML = `<a href="${GITHUB_SOURCE_CODE_URL}" target="_blank">${TOGGLE_TEXT}</a>`
+    containerHeader.classList.add(CONTAINER_HEADER_CLASS)
+  
+    // body
+    const containerBody = document.createElement('div')
+    containerBody.classList.add(CONTAINER_BODY_CLASS)
+    let element: HTMLDivElement;
+    headersInfos.forEach(function ({ html, level, top }) {
+      element = document.createElement('div')
+      element.classList.add(`${HEADER_CLASS_PREFIX}_${level}`)
+      element.setAttribute('data-top', String(top))
+      element.innerHTML = html
+      containerBody.appendChild(element)
+    })
+  
+    // footer
+    const containerFooter = document.createElement('div')
+    containerFooter.classList.add(CONTAINER_FOOTER_CLASS)
+  
+    // toggle element
+    const toggle = document.createElement('div');
+    toggle.classList.add(TOGGLE_CLASS);
+    toggle.innerHTML = ICON_PNG_BASE64;
+  
+    // append
+    fragment.appendChild(toggle)
+    fragment.appendChild(containerHeader)
+    fragment.appendChild(containerBody)
+    fragment.appendChild(containerFooter)
+  
+    container.addEventListener('click', function (e: MouseEvent) {
+      const { target } = e
+      if (target) {
+        const top = getEleDataTopAttribute(target as HTMLElement)
+        document.documentElement.scrollTop = top - matchedSite!.stickyHeight
+      }
+    })
+    
+    toggle.addEventListener('click', function (e: MouseEvent) {
+      e.stopPropagation();
+      if (isActive) {
+        container.classList.remove(ACTIVE_CLASS);
+      } else {
+        container.classList.add(ACTIVE_CLASS);
+      }
+      isActive = !isActive
+    })
+  
+    container.appendChild(fragment)
+    document.body.appendChild(container)
+  })  
 }
 
 function getEnable(callback?: (enabled: boolean) => void): void {
