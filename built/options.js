@@ -16,9 +16,9 @@ var _DEFAULT_CONFIG_SITES = [
         stickyHeight: 0
     },
     {
-        "markdownBodySelector": ".Post-RichText",
-        "stickyHeight": 52,
-        "urlRegExp": "^https://zhuanlan.zhihu.com/p/"
+        markdownBodySelector: ".Post-RichText",
+        stickyHeight: 52,
+        urlRegExp: "^https://zhuanlan.zhihu.com/p/"
     }
 ];
 var KEYS_ARR = ["urlRegExp", "markdownBodySelector", "stickyHeight"];

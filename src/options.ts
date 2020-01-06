@@ -16,9 +16,9 @@ const _DEFAULT_CONFIG_SITES: SiteItem[] = [
     stickyHeight: 0
   },
   {
-    "markdownBodySelector": ".Post-RichText",
-    "stickyHeight": 52,
-    "urlRegExp": "^https://zhuanlan.zhihu.com/p/"
+    markdownBodySelector: ".Post-RichText",
+    stickyHeight: 52,
+    urlRegExp: "^https://zhuanlan.zhihu.com/p/"
   }
 ]
 
