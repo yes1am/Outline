@@ -271,7 +271,9 @@ const TOGGLE_CLASS = 'CHROME_ESSAY_OUTLINE_EXTENSION_TOGGLE'
 const ACTIVE_CLASS = 'CHROME_ESSAY_OUTLINE_EXTENSION_ACTIVE'
 const HEADER_SELECTOR_STRING = 'h1,h2,h3,h4,h5,h6'
 const TOGGLE_TEXT = 'essay-outline'
-let isActive = true;
+
+// 抽屉，是否默认打开
+let isActive = false;
 
 const DEFAULT_CONFIG_SITES: SiteItem[] = [
   {

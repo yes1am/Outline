@@ -9,7 +9,8 @@ var TOGGLE_CLASS = 'CHROME_ESSAY_OUTLINE_EXTENSION_TOGGLE';
 var ACTIVE_CLASS = 'CHROME_ESSAY_OUTLINE_EXTENSION_ACTIVE';
 var HEADER_SELECTOR_STRING = 'h1,h2,h3,h4,h5,h6';
 var TOGGLE_TEXT = 'essay-outline';
-var isActive = true;
+// 抽屉，是否默认打开
+var isActive = false;
 var DEFAULT_CONFIG_SITES = [
     {
         urlRegExp: "^https://github.com",
