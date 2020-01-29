@@ -34,11 +34,11 @@ const headers = container.querySelector('h1,h2,h3,h4,h5')
 
 **2. stickyHeight**  
 
+```js
 // 有很多的网站页面，会存在 sticky 元素
 // 这导致在实际导航中，需要减去 sticky 的高度，如 github issue 页面该值为 60
 // 在一些页面，除了 sticky 元素，滚动过程中还会有别的元素出现，导致计算错误出现 bug
 
-```js
 document.documentElement.scrollTop = top - stickyHeight
 ```
 
