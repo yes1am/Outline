@@ -20,9 +20,38 @@ A Chrome extension, generate essay-outline on all sites, inspired by [Github Mar
 5. 通过点击插件图标，切换是否启用该扩展
 6. 通过选项页，可配置插件所运行的网站页面(默认支持 Github, cnblogs, 知乎专栏)
 
-### 1.1 选项页配置参数解释:  
+## 2. 选项页配置
 
-**1. markdownBodySelector**  
+### 2.1 默认配置
+
+```json
+[
+  {
+    "markdownBodySelector": ".markdown-body",
+    "stickyHeight": 0,
+    "urlRegExp": "^https://github.com"
+  },
+  {
+    "markdownBodySelector": ".markdown-body",
+    "stickyHeight": 60,
+    "urlRegExp": "^https://github.com/.*/issues/"
+  },
+  {
+    "markdownBodySelector": "#cnblogs_post_body",
+    "stickyHeight": 0,
+    "urlRegExp": "^https://www.cnblogs.com/.*.html/"
+  },
+  {
+    "markdownBodySelector": ".Post-RichText",
+    "stickyHeight": 52,
+    "urlRegExp": "^https://zhuanlan.zhihu.com/p/"
+  }
+]
+```
+
+### 2.2 参数解释:  
+
+**markdownBodySelector**  
 ```js
 // markdownBodySelector 参数用来确定文章的内容区域
 // 只有该区域的 header 标签会被选择出来
@@ -32,7 +61,7 @@ const container = document.querySelector(markdownBodySelector);
 const headers = container.querySelector('h1,h2,h3,h4,h5')
 ```
 
-**2. stickyHeight**  
+**stickyHeight**  
 
 ```js
 // 有很多的网站页面，会存在 sticky 元素
@@ -42,7 +71,7 @@ const headers = container.querySelector('h1,h2,h3,h4,h5')
 document.documentElement.scrollTop = top - stickyHeight
 ```
 
-**3. urlRegExp**  
+**urlRegExp**  
 
 ```js
 // 用于判断当前网站是否含有配置项
@@ -58,3 +87,4 @@ if(new RegExp(urlRegExp).test(window.location.href)) {
 
 1. [Icon 来源](https://www.flaticon.com/)
 2. [Chrome 扩展开发教程](http://blog.haoji.me/chrome-plugin-develop.html)
+3. [Chrome Extension TypeScript Starter](https://github.com/chibat/chrome-extension-typescript-starter)

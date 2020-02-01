@@ -1,0 +1,34 @@
+{
+  "manifest_version": 2,
+  "name": "essay-outline",
+  "version": "1.0.0",
+  "description": "a chrome extension, generate essay-outline on all sites",
+  "homepage_url": "https://github.com/yes1am/essay-outline",
+  "author": "songjp1996@gmail.com",
+  "icons": {
+    "16": "./img/icon.png",
+    "48": "./img/icon.png",
+    "128": "./img/icon.png"
+  },
+  "browser_action": {
+		"default_icon": "./img/icon.png",
+		"default_title": "essay-outline",
+		"default_popup": "./popup.html"
+	},
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": [
+      "./js/content-script.js",
+      "./js/common.js"
+    ],
+    "css": ["./css/content-script.css"],
+    "run_at": "document_start"
+  }],
+  "options_ui":{
+    "page": "./options.html",
+    "open_in_tab": true
+  },
+  "permissions": [
+    "storage"
+  ]
+}

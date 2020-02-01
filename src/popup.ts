@@ -1,69 +1,41 @@
-interface StorageItem {
-  enabled: boolean;
-}
-
-declare var chrome: any;
+import { getStorageEnable, setStorageEnable } from './utils';
 
 const EXTENSION_ENABLED_TEXT = '插件已启用 (点击关闭)';
 const EXTENSION_DISABLED_TEXT = '插件已关闭 (点击启用)';
+const enableBtn = document.getElementById('EnableExtension');
 
-function getEnableFun (callback?:(enabled:boolean) => void): void {
-  // get enabled, default value is true
-  chrome.storage.sync.get({ enabled: true }, function (item: StorageItem) {
-    const { enabled } = item
-    console.log(`get enabled: ${enabled}`)
-    if (callback) {
-      callback(enabled)
+function initWhenPageLoad() {
+  getStorageEnable((enabled) => {
+    if (enabled) {
+      enableBtn!.classList.add('item-select');
+      enableBtn!.innerHTML = EXTENSION_ENABLED_TEXT;
+    } else {
+      enableBtn!.classList.remove('item-select');
+      enableBtn!.innerHTML = EXTENSION_DISABLED_TEXT;
     }
-  })
+  });
 }
 
-function setEnable (enabled:boolean, callback:Function) {
-  chrome.storage.sync.set({ enabled }, function () {
-    console.log(`set enabled: ${enabled}`)
-    if (callback) {
-      callback()
-    }
-  })
-}
-
-const enableBtn = document.getElementById('EnableExtension')
-
-if(enableBtn) {
-  enableBtn.addEventListener('click', function () {
-    getEnableFun((enabled) => {
+if (enableBtn) {
+  enableBtn.addEventListener('click', () => {
+    getStorageEnable((enabled) => {
       if (enabled) {
         // if storage is true, click change into false
-        setEnable(false, () => {
+        setStorageEnable(false, () => {
           // remove class and change html
-          enableBtn.classList.remove('item-select')
-          enableBtn.innerHTML = EXTENSION_DISABLED_TEXT
-        })
+          enableBtn.classList.remove('item-select');
+          enableBtn.innerHTML = EXTENSION_DISABLED_TEXT;
+        });
       } else {
         // if storage is false, click change into true
-        setEnable(true, () => {
+        setStorageEnable(true, () => {
           // add class and change html
-          enableBtn.classList.add('item-select')
-          enableBtn.innerHTML = EXTENSION_ENABLED_TEXT
-        })
+          enableBtn.classList.add('item-select');
+          enableBtn.innerHTML = EXTENSION_ENABLED_TEXT;
+        });
       }
-    })
-  })
+    });
+  });
 
-  function initWhenPageLoad () {
-    getEnableFun((enabled) => {
-      if (enabled) {
-        enableBtn!.classList.add('item-select')
-        enableBtn!.innerHTML = EXTENSION_ENABLED_TEXT
-      } else {
-        enableBtn!.classList.remove('item-select')
-        enableBtn!.innerHTML = EXTENSION_DISABLED_TEXT
-      }
-    })
-  }
-  
-  initWhenPageLoad()
+  initWhenPageLoad();
 }
-
-
-

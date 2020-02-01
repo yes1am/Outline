@@ -1,0 +1,68 @@
+body, html, div {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font: 12px/1.5 \5FAE\8F6F\96C5\9ED1, \5B8B\4F53, Tahoma, Geneva, sans-serif;
+  color: #222
+}
+
+.item-box {
+  border-top: 1px solid #DDDDDD;
+  min-width: 206px;
+  padding: 0 0 3px 0
+}
+
+.item-box:nth-child(1) {
+  border-top: 0 none;
+}
+
+.item {
+  position: relative;
+  display: -webkit-box;
+  box-sizing: border-box;
+  min-width: 206px;
+  height: 25px;
+  -webkit-box-align: center;
+  padding-left: 23px;
+  padding-right: 13px;
+  border: 1px solid #fff;
+  margin-top: 3px;
+  cursor: pointer;
+}
+
+.item:hover {
+  border: 1px solid #BBCCDD;
+  border-radius: 3px;
+  background: -webkit-gradient(linear, 0 0, 0 100%, from(#fdfeff), to(#EEF2F9), color-stop(0.5, rgba(237, 242, 249, 1)), color-stop(0.33, rgba(237, 242, 249, 1)))
+}
+
+.item:after {
+  display: none;
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 7px;
+  background: url(../img/tick.png) no-repeat;
+  width: 12px;
+  height: 12px;
+}
+
+.item-select:after {
+  display: block;
+}
+
+.item-disable {
+  position: relative;
+  display: -webkit-box;
+  box-sizing: border-box;
+  min-width: 206px;
+  height: 25px;
+  -webkit-box-align: center;
+  padding-left: 23px;
+  padding-right: 13px;
+  border: 1px solid #fff;
+  margin-top: 3px;
+  color: #aaa
+}

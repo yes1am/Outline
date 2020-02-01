@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
-    "outDir": "./built",
+    "outDir": "./dist",
     "allowJs": true,
-    "target": "es5",
+    "target": "es6",
     "lib": ["es6", "dom", "es2017"],
+    "module": "commonjs",
     "noImplicitReturns": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
