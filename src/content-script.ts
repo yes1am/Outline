@@ -1,6 +1,6 @@
 import ICON_BASE64 from './icon-base64';
-import { SiteItem, HeaderInfo, StorageItem } from './types';
-import { getStorageSites } from './utils';
+import { SiteItem, HeaderInfo } from './types';
+import { getStorageSites, getStorageEnable } from './utils';
 import { DEFAULT_EXTENSION_ACTIVE } from './constants';
 
 const GITHUB_SOURCE_CODE_URL = 'https://github.com/yes1am/essay-outline';
@@ -149,18 +149,8 @@ function generateDom() {
   });
 }
 
-function getEnable(callback?: (enabled: boolean) => void): void {
-  // get enabled, default value is true
-  chrome.storage.sync.get({ enabled: true }, (item: StorageItem) => {
-    const { enabled } = item;
-    if (callback) {
-      callback(enabled);
-    }
-  });
-}
-
 function main() {
-  getEnable((enabled) => {
+  getStorageEnable((enabled) => {
     if (enabled) {
       generateDom();
     }
@@ -169,7 +159,7 @@ function main() {
   // support pjax:
   // pjax events fire order: pjax:start, pjax:success, pjax:complete, pjax:end
   document.addEventListener('pjax:end', () => {
-    getEnable((enabled) => {
+    getStorageEnable((enabled) => {
       if (enabled) {
         generateDom();
       }
