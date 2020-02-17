@@ -1,6 +1,6 @@
 import ICON_BASE64 from './icon-base64';
 import { SiteItem, HeaderInfo } from './types';
-import { getStorageSites, getStorageEnable } from './utils';
+import { getStorageSites, getStorageEnable, debug } from './utils';
 import { DEFAULT_EXTENSION_ACTIVE } from './constants';
 
 const GITHUB_SOURCE_CODE_URL = 'https://github.com/yes1am/essay-outline';
@@ -51,20 +51,20 @@ function generateDom() {
       }
     });
     if (!matchedSite) {
-      console.debug('essay-outline extension fail, no config');
+      debug('essay-outline extension fail, no config');
       return;
     }
 
     const { document } = window;
     const markdownBody = document.querySelector(matchedSite!.markdownBodySelector);
     if (!markdownBody) {
-      console.debug(`essay-outline extension fail, no ${matchedSite!.markdownBodySelector} found`);
+      debug(`essay-outline extension fail, no ${matchedSite!.markdownBodySelector} found`);
       return;
     }
 
     const headers = markdownBody.querySelectorAll(HEADER_SELECTOR_STRING);
     if (!headers.length) {
-      console.debug(`essay-outline extension fail, no header tag under ${matchedSite!.markdownBodySelector}`);
+      debug(`essay-outline extension fail, no header tag under ${matchedSite!.markdownBodySelector}`);
       return;
     }
 

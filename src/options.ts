@@ -1,5 +1,5 @@
 import { SiteItem } from './types';
-import { getStorageSites, setStorageSites } from './utils';
+import { getStorageSites, setStorageSites, debug } from './utils';
 
 const KEYS_ARR:string[] = ['urlRegExp', 'markdownBodySelector', 'stickyHeight'];
 
@@ -12,7 +12,7 @@ window.addEventListener('load', () => {
       try {
         (configArea as HTMLInputElement).value = JSON.stringify(configSites, null, 2);
       } catch (e) {
-        console.debug('options.js, JSON.stringify(configSites,null,2) error');
+        debug('options.js, JSON.stringify(configSites,null,2) error');
       }
     });
   }

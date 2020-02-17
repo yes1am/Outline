@@ -1,12 +1,18 @@
 import { StorageItem, SiteItem } from './types';
 import { DEFAULT_CONFIG_SITES, DEFAULT_EXTENSION_ENABLE } from './constants';
 
+export function debug(...args: any) {
+  console.group('%c essay-outline: ', 'color: white;background:#1791f2;');
+  console.debug('%clog:', 'color: red', ...args);
+  console.groupEnd();
+}
+
 // enable, 是否启用插件
 export function getStorageEnable(callback?:(enabled:boolean) => void): void {
   // get enabled, default value is true
   chrome.storage.sync.get({ enabled: DEFAULT_EXTENSION_ENABLE }, (item: StorageItem) => {
     const { enabled } = item;
-    console.log(`get enabled: ${enabled}`);
+    debug(`get enabled: ${enabled}`);
     if (callback) {
       callback(enabled);
     }
@@ -15,7 +21,7 @@ export function getStorageEnable(callback?:(enabled:boolean) => void): void {
 
 export function setStorageEnable(enabled:boolean, callback:Function) {
   chrome.storage.sync.set({ enabled }, () => {
-    console.log(`set enabled: ${enabled}`);
+    debug(`set enabled: ${enabled}`);
     if (callback) {
       callback();
     }
@@ -34,7 +40,7 @@ export function getStorageSites(callback?: (configSites: SiteItem []) => void): 
 
 export function setStorageSites(configSites:SiteItem [], callback?:Function) {
   chrome.storage.sync.set({ configSites }, () => {
-    console.log(`set configSites: ${JSON.stringify(configSites)}`);
+    debug(`set configSites: ${JSON.stringify(configSites)}`);
     if (callback) {
       callback();
     }
