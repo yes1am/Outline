@@ -1,7 +1,6 @@
 export interface SiteItem {
   urlRegExp: String;
   markdownBodySelector: string;
-  stickyHeight: number;
 }
 
 export interface StorageItem {
@@ -10,7 +9,9 @@ export interface StorageItem {
 }
 
 export interface HeaderInfo {
-  html: string;
-  level: string;
+  text: string;
+  level: number;
   top: number;
+  children: Partial<HeaderInfo>[];
+  parents: number[];
 }

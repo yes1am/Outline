@@ -2,7 +2,7 @@ import { StorageItem, SiteItem } from './types';
 import { DEFAULT_CONFIG_SITES, DEFAULT_EXTENSION_ENABLE } from './constants';
 
 export function debug(...args: any) {
-  console.group('%c essay-outline: ', 'color: white;background:#1791f2;');
+  console.group('%c Outline: ', 'color: white;background:#1791f2;');
   console.debug('%clog:', 'color: red', ...args);
   console.groupEnd();
 }

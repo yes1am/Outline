@@ -1,5 +1,7 @@
 const path = require('path');
+// eslint-disable-next-line import/no-extraneous-dependencies
 const CopyPlugin = require('copy-webpack-plugin');
+// eslint-disable-next-line import/no-extraneous-dependencies
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
@@ -37,10 +39,18 @@ module.exports = {
     extensions: ['.ts', '.js'],
   },
   plugins: [
-    new CopyPlugin([
-      { from: '.', to: '../' },
-    ],
-    { context: 'public' }),
+    // 将 public 的内容复制到 dist 下面. 由于 output 是 dist/js, to 为 ../, 因此最终会复制到 dist 目录
+    new CopyPlugin(
+      [
+        {
+          from: '.',
+          to: '../',
+        },
+      ],
+      {
+        context: 'public',
+      },
+    ),
     new CleanWebpackPlugin(),
   ],
 };

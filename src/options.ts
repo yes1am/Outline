@@ -1,7 +1,7 @@
 import { SiteItem } from './types';
 import { getStorageSites, setStorageSites, debug } from './utils';
 
-const KEYS_ARR:string[] = ['urlRegExp', 'markdownBodySelector', 'stickyHeight'];
+const KEYS_ARR:string[] = ['urlRegExp', 'markdownBodySelector'];
 
 window.addEventListener('load', () => {
   const configArea = document.querySelector('#config-area');

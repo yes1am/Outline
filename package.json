@@ -1,5 +1,5 @@
 {
-  "name": "essay-outline",
+  "name": "outline",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,15 +9,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yes1am/essay-outline.git"
+    "url": "git+https://github.com/yes1am/Outline.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/yes1am/essay-outline/issues"
+    "url": "https://github.com/yes1am/Outline/issues"
   },
-  "homepage": "https://github.com/yes1am/essay-outline#readme",
+  "homepage": "https://github.com/yes1am/Outline#readme",
   "dependencies": {
     "@types/chrome": "0.0.93",
     "webpack-merge": "^4.2.2"
@@ -26,7 +26,7 @@
     "@typescript-eslint/eslint-plugin": "^2.18.0",
     "@typescript-eslint/parser": "^2.18.0",
     "clean-webpack-plugin": "^3.0.0",
-    "copy-webpack-plugin": "^5.1.1",
+    "copy-webpack-plugin": "^5.1.2",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-typescript": "^6.3.1",
     "eslint-plugin-import": "^2.20.0",

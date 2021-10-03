@@ -3,7 +3,7 @@ import { SiteItem, HeaderInfo } from './types';
 import { getStorageSites, getStorageEnable, debug } from './utils';
 import { DEFAULT_EXTENSION_ACTIVE } from './constants';
 
-const GITHUB_SOURCE_CODE_URL = 'https://github.com/yes1am/essay-outline';
+const GITHUB_SOURCE_CODE_URL = 'https://github.com/yes1am/Outline';
 const HEADER_CLASS_PREFIX = 'CHROME_ESSAY_OUTLINE_EXTENSION_CLASS';
 const CONTAINER_ID = 'CHROME_ESSAY_OUTLINE_EXTENSION_CONTAINER';
 const CONTAINER_HEADER_CLASS = 'CHROME_ESSAY_OUTLINE_EXTENSION_HEADER';
@@ -12,22 +12,12 @@ const CONTAINER_FOOTER_CLASS = 'CHROME_ESSAY_OUTLINE_EXTENSION_FOOTER';
 const TOGGLE_CLASS = 'CHROME_ESSAY_OUTLINE_EXTENSION_TOGGLE';
 const ACTIVE_CLASS = 'CHROME_ESSAY_OUTLINE_EXTENSION_ACTIVE';
 const HEADER_SELECTOR_STRING = 'h1,h2,h3,h4,h5,h6';
-const TOGGLE_TEXT = 'essay-outline';
+const HEADER_TEXT = '目录';
 
 let isActive = DEFAULT_EXTENSION_ACTIVE;
 
 function getOffsetToDocumentTop(ele: HTMLElement): number {
   return ele.getBoundingClientRect().top + document.documentElement.scrollTop;
-}
-
-function getEleDataTopAttribute(ele: HTMLElement): number {
-  let result = ele.dataset.top;
-  while (!result && ele.parentElement) {
-    result = ele.parentElement.dataset.top;
-    // eslint-disable-next-line no-param-reassign
-    ele = ele.parentElement;
-  }
-  return Number(result);
 }
 
 function removeContainerIfAlreadyExist() {
@@ -37,6 +27,55 @@ function removeContainerIfAlreadyExist() {
     prevContainer.parentNode.removeChild(prevContainer);
     prevContainer = null;
   }
+}
+
+/**
+ *
+ * @param tagNum header 标签的数字部分，比如 h1 标签，则 level 为 1
+ * @returns 返回比当前 level 小的数的数字，比如 level 为 3，则返回 [2,1,0]
+ */
+function getParent(level: number): number[] {
+  const arr = [];
+  for (let i = level - 1; i >= 0; i -= 1) {
+    arr.push(i);
+  }
+  return arr;
+}
+
+// 将 [{ h1, ... }, { h2, ... }, ...] 转为 [{ h1, ..., children: [{ h2, ... }] }, ...]
+function convertArrToTree(data: HeaderInfo[]): HeaderInfo {
+  const result: HeaderInfo[] = JSON.parse(JSON.stringify(data));
+  result.forEach((item1, index1) => {
+    if (item1.parents.length) {
+      // 从当前位置往前面找，比如当前索引是 3，则父级可能为 2 或 1
+      const previousHeaders = result.slice(0, index1).reverse();
+      // find 会在找到后不继续往下找
+      item1.parents.find((level) => {
+        const parent = previousHeaders.find((item2) => item2.level === level);
+        if (parent) {
+          parent.children.push(item1);
+          return true;
+        }
+        return false;
+      });
+    }
+  });
+  return result[0];
+}
+
+function renderTree(obj: HeaderInfo): string {
+  if (obj.children.length) {
+    let str = '';
+    obj.children.forEach((item) => {
+      let ele = `<div data-top="${item.top}" title="${item.text}">${item.text}</div>`;
+      if (item.children?.length) {
+        ele += renderTree(item as HeaderInfo);
+      }
+      str += `<li class="${HEADER_CLASS_PREFIX}_${item.level}">${ele}</li>`;
+    });
+    return `<ul>${str}</ul>`;
+  }
+  return '';
 }
 
 function generateDom() {
@@ -51,32 +90,46 @@ function generateDom() {
       }
     });
     if (!matchedSite) {
-      debug('essay-outline extension fail, no config');
+      debug('Outline extension fail, no config');
       return;
     }
 
     const { document } = window;
     const markdownBody = document.querySelector(matchedSite!.markdownBodySelector);
     if (!markdownBody) {
-      debug(`essay-outline extension fail, no ${matchedSite!.markdownBodySelector} found`);
+      debug(`Outline extension fail, no ${matchedSite!.markdownBodySelector} found`);
       return;
     }
 
     const headers = markdownBody.querySelectorAll(HEADER_SELECTOR_STRING);
     if (!headers.length) {
-      debug(`essay-outline extension fail, no header tag under ${matchedSite!.markdownBodySelector}`);
+      debug(`Outline extension fail, no header tag under ${matchedSite!.markdownBodySelector}`);
       return;
     }
 
     const headersInfos: HeaderInfo[] = [];
 
     Array.from(headers).forEach((header: HTMLDivElement) => {
+      const level = Number(header.tagName.slice(1));
       headersInfos.push({
-        html: header.innerHTML,
-        level: header.tagName,
+        text: header.innerText,
+        level,
         top: getOffsetToDocumentTop(header),
+        children: [],
+        parents: getParent(level),
       });
     });
+
+    // 插入 h0
+    headersInfos.unshift({
+      text: '',
+      level: 0,
+      top: 0,
+      children: [],
+      parents: [],
+    });
+
+    const renderTreeInfo = convertArrToTree(headersInfos);
 
     const container = document.createElement('div');
     container.classList.add(CONTAINER_ID);
@@ -87,20 +140,13 @@ function generateDom() {
 
     // header
     const containerHeader = document.createElement('div');
-    containerHeader.innerHTML = `<a href="${GITHUB_SOURCE_CODE_URL}" target="_blank">${TOGGLE_TEXT}</a>`;
+    containerHeader.innerHTML = `<a title="Fork Me On Github" href="${GITHUB_SOURCE_CODE_URL}" target="_blank">${HEADER_TEXT}</a>`;
     containerHeader.classList.add(CONTAINER_HEADER_CLASS);
 
     // body
     const containerBody = document.createElement('div');
     containerBody.classList.add(CONTAINER_BODY_CLASS);
-    let element: HTMLDivElement;
-    headersInfos.forEach(({ html, level, top }) => {
-      element = document.createElement('div');
-      element.classList.add(`${HEADER_CLASS_PREFIX}_${level}`);
-      element.setAttribute('data-top', String(top));
-      element.innerHTML = html;
-      containerBody.appendChild(element);
-    });
+    containerBody.innerHTML = renderTree(renderTreeInfo);
 
     // footer
     const containerFooter = document.createElement('div');
@@ -109,6 +155,7 @@ function generateDom() {
     // toggle element
     const toggle = document.createElement('div');
     toggle.classList.add(TOGGLE_CLASS);
+    toggle.title = 'Outline';
     toggle.innerHTML = ICON_BASE64;
 
     // append
@@ -119,10 +166,9 @@ function generateDom() {
 
     container.addEventListener('click', (e: MouseEvent) => {
       e.stopPropagation();
-      const { target } = e;
-      if (target) {
-        const top = getEleDataTopAttribute(target as HTMLElement);
-        document.documentElement.scrollTop = top - matchedSite!.stickyHeight;
+      const { top } = (e.target as HTMLElement)?.dataset;
+      if (top) {
+        document.documentElement.scrollTop = Number(top);
       }
     });
 
@@ -134,14 +180,6 @@ function generateDom() {
         container.classList.add(ACTIVE_CLASS);
       }
       isActive = !isActive;
-    });
-
-    document.addEventListener('click', (e: MouseEvent) => {
-      e.stopPropagation();
-      if (!(e.target as HTMLElement).contains(container) && isActive) {
-        container.classList.remove(ACTIVE_CLASS);
-        isActive = !isActive;
-      }
     });
 
     container.appendChild(fragment);
