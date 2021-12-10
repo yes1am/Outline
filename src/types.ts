@@ -11,7 +11,7 @@ export interface StorageItem {
 export interface HeaderInfo {
   text: string;
   level: number;
-  top: number;
+  index: number;
   children: Partial<HeaderInfo>[];
   parents: number[];
 }

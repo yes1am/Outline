@@ -16,9 +16,13 @@ const HEADER_TEXT = '目录';
 
 let isActive = DEFAULT_EXTENSION_ACTIVE;
 
-function getOffsetToDocumentTop(ele: HTMLElement): number {
-  return ele.getBoundingClientRect().top + document.documentElement.scrollTop;
+interface RefType {
+  [key: string]: HTMLDivElement
 }
+
+let refs: RefType = {
+
+};
 
 function removeContainerIfAlreadyExist() {
   let prevContainer = document.querySelector(`.${CONTAINER_ID}`);
@@ -67,7 +71,7 @@ function renderTree(obj: HeaderInfo): string {
   if (obj.children.length) {
     let str = '';
     obj.children.forEach((item) => {
-      let ele = `<div data-top="${item.top}" title="${item.text}">${item.text}</div>`;
+      let ele = `<div data-index="${item.index}" title="${item.text}">${item.text}</div>`;
       if (item.children?.length) {
         ele += renderTree(item as HeaderInfo);
       }
@@ -79,6 +83,8 @@ function renderTree(obj: HeaderInfo): string {
 }
 
 function generateDom() {
+  // 清空 refs
+  refs = {};
   removeContainerIfAlreadyExist();
   const currentSite = window.location.href;
   let matchedSite: SiteItem | null = null;
@@ -107,14 +113,18 @@ function generateDom() {
       return;
     }
 
+    Array.from(headers).forEach((item: HTMLDivElement, index: number) => {
+      refs[String(index)] = item;
+    });
+
     const headersInfos: HeaderInfo[] = [];
 
-    Array.from(headers).forEach((header: HTMLDivElement) => {
+    Array.from(headers).forEach((header: HTMLDivElement, index: number) => {
       const level = Number(header.tagName.slice(1));
       headersInfos.push({
         text: header.innerText,
         level,
-        top: getOffsetToDocumentTop(header),
+        index,
         children: [],
         parents: getParent(level),
       });
@@ -124,7 +134,7 @@ function generateDom() {
     headersInfos.unshift({
       text: '',
       level: 0,
-      top: 0,
+      index: -1,
       children: [],
       parents: [],
     });
@@ -136,6 +146,13 @@ function generateDom() {
     if (isActive) {
       container.classList.add(ACTIVE_CLASS);
     }
+    // overlay 时，滚动条不占据空间，要避免遮挡。滚动条宽度为 15px
+    if (window.getComputedStyle(document.documentElement).overflowY === 'overlay') {
+      container.style.right = '15px';
+    } else {
+      container.style.right = '0px';
+    }
+
     const fragment = document.createDocumentFragment();
 
     // header
@@ -166,9 +183,9 @@ function generateDom() {
 
     container.addEventListener('click', (e: MouseEvent) => {
       e.stopPropagation();
-      const { top } = (e.target as HTMLElement)?.dataset;
-      if (top) {
-        document.documentElement.scrollTop = Number(top);
+      const { index } = (e.target as HTMLElement)?.dataset;
+      if (index !== undefined && refs[index] && refs[index].scrollIntoView) {
+        refs[index].scrollIntoView();
       }
     });
 
