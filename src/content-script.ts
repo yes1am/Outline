@@ -99,9 +99,22 @@ function generateDom() {
       debug('Outline extension fail, no config');
       return;
     }
-
-    const { document } = window;
-    const markdownBody = document.querySelector(matchedSite!.markdownBodySelector);
+    // NOTE:
+    // 如果有 iframeSelector, 则 outerDocument 即为最外层的 document,
+    // 而 innerDocument 是内部 iframeSelector 的 document 对象
+    // 创建的元素加到 outerDocument 上（加到 innerDocument 的话，插件的 css 不生效）
+    // innerDocument 用来找到匹配的元素
+    const outerDocument = window.document;
+    let innerDocument = window.document;
+    let innerWindow = window as Window;
+    // 兼容 iframeSelector 的情况
+    if (matchedSite.iframeSelector) {
+      innerDocument = (outerDocument.querySelector(matchedSite.iframeSelector) as HTMLIFrameElement)
+      ?.contentWindow?.document || innerDocument;
+      innerWindow = (outerDocument.querySelector(matchedSite.iframeSelector) as HTMLIFrameElement)
+      ?.contentWindow || innerWindow;
+    }
+    const markdownBody = innerDocument.querySelector(matchedSite!.markdownBodySelector);
     if (!markdownBody) {
       debug(`Outline extension fail, no ${matchedSite!.markdownBodySelector} found`);
       return;
@@ -141,36 +154,36 @@ function generateDom() {
 
     const renderTreeInfo = convertArrToTree(headersInfos);
 
-    const container = document.createElement('div');
+    const container = outerDocument.createElement('div');
     container.classList.add(CONTAINER_ID);
     if (isActive) {
       container.classList.add(ACTIVE_CLASS);
     }
     // overlay 时，滚动条不占据空间，要避免遮挡。滚动条宽度为 15px
-    if (window.getComputedStyle(document.documentElement).overflowY === 'overlay') {
+    if (innerWindow.getComputedStyle(document.documentElement).overflowY === 'overlay') {
       container.style.right = '15px';
     } else {
       container.style.right = '0px';
     }
 
-    const fragment = document.createDocumentFragment();
+    const fragment = outerDocument.createDocumentFragment();
 
     // header
-    const containerHeader = document.createElement('div');
+    const containerHeader = outerDocument.createElement('div');
     containerHeader.innerHTML = `<a title="Fork Me On Github" href="${GITHUB_SOURCE_CODE_URL}" target="_blank">${HEADER_TEXT}</a>`;
     containerHeader.classList.add(CONTAINER_HEADER_CLASS);
 
     // body
-    const containerBody = document.createElement('div');
+    const containerBody = outerDocument.createElement('div');
     containerBody.classList.add(CONTAINER_BODY_CLASS);
     containerBody.innerHTML = renderTree(renderTreeInfo);
 
     // footer
-    const containerFooter = document.createElement('div');
+    const containerFooter = outerDocument.createElement('div');
     containerFooter.classList.add(CONTAINER_FOOTER_CLASS);
 
     // toggle element
-    const toggle = document.createElement('div');
+    const toggle = outerDocument.createElement('div');
     toggle.classList.add(TOGGLE_CLASS);
     toggle.title = 'Outline';
     toggle.innerHTML = ICON_BASE64;
@@ -184,8 +197,10 @@ function generateDom() {
     container.addEventListener('click', (e: MouseEvent) => {
       e.stopPropagation();
       const { index } = (e.target as HTMLElement)?.dataset;
-      if (index !== undefined && refs[index] && refs[index].scrollIntoView) {
-        refs[index].scrollIntoView();
+      if (index !== undefined && refs[index]) {
+        const y = refs[index].getBoundingClientRect().top
+          + innerWindow.scrollY + (matchedSite!.navHeight || 0);
+        innerWindow.scrollTo({ top: y, behavior: 'smooth' });
       }
     });
 
@@ -200,7 +215,7 @@ function generateDom() {
     });
 
     container.appendChild(fragment);
-    document.body.appendChild(container);
+    outerDocument.body.appendChild(container);
   });
 }
 
@@ -221,6 +236,20 @@ function main() {
     });
   });
 }
+
+// 监听 popup 消息
+chrome.runtime.onMessage.addListener((request) => {
+  if (request.cmd === 'reload') {
+    getStorageEnable((enabled) => {
+      if (enabled) {
+        debug('Outline extension reload');
+        generateDom();
+      } else {
+        debug('Outline extension reload failed, extension not enable');
+      }
+    });
+  }
+});
 
 window.addEventListener('load', () => {
   main();

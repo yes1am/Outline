@@ -1,6 +1,115 @@
-<h1> Outline </h1>
+# Outline
 
-A Chrome extension, generate outline for website, inspired by [Github Markdown Outline Extension](https://github.com/dbkaplun/github-markdown-outline-extension)
+一个为网站生成目录的 Chrome 插件，受到 [Github Markdown Outline Extension](https://github.com/dbkaplun/github-markdown-outline-extension) 的启发。
+
+> *A Chrome extension, generate outline for website, inspired by [Github Markdown Outline Extension](https://github.com/dbkaplun/github-markdown-outline-extension)*
+
+## 1. 安装 
+下载地址: [Chrome 网上应用店](https://chrome.google.com/webstore/detail/outline/hdnnkahjgbbebkfcmefalfmcfclakcdh?hl=zh-CN)
+
+## 2. 如何使用
+
+### 2.1 鼠标左键点击插件图标
+
+*示例图片:*
+![左键点击插件图标](https://raw.githubusercontent.com/yes1am/PicBed/master/img/20211226223822.png)
+
+1. 插件默认是开启状态，可点击切换开启/关闭插件(*在不卸载插件的情况下，禁用插件*)
+2. 重新生成目录(*由于网页上内容不一定都是在一开始就会渲染出来，脚本执行的时候由于获取不到网页内容，导致生成目录失败，此时可以等页面渲染完毕之后，点击该按钮重新生成目录*)
+
+
+### 2.2 配置插件
+
+#### 2.2.1 默认配置
+
+源码地址: https://github.com/yes1am/Outline/blob/master/src/constants.ts
+
+*源码:*
+```js
+export const DEFAULT_CONFIG_SITES: SiteItem[] = [
+  {
+    urlRegExp: '^https://github.com',
+    markdownBodySelector: '.markdown-body',
+    navHeight: -49,
+  },
+  {
+    urlRegExp: '^https://github.com/.*/issues/',
+    markdownBodySelector: '.markdown-body',
+    navHeight: -49,
+  },
+  {
+    urlRegExp: '^https://www.cnblogs.com/.*.html',
+    markdownBodySelector: '#cnblogs_post_body',
+  },
+  {
+    markdownBodySelector: '.Post-RichText',
+    urlRegExp: '^https://zhuanlan.zhihu.com/p/',
+    navHeight: -52,
+  },
+];
+```
+
+#### 2.2.2 参数解释
+
+##### 2.2.2.1 markdownBodySelector
+
+- 标题容器的 DOM 选择器，该参数用来确定文章的内容区域，比如知乎专栏中内容区域对应的选择器就是: `.Post-RichText`
+- 只有该选择器所对应 DOM **内部**的 `h1,h2...h6` 等标题元素会被选择出来用于生成目录
+
+*源码:*
+```js
+const container = document.querySelector(markdownBodySelector);
+const headers = container.querySelector('h1,h2,h3,h4,h5,h6')
+```
+
+*示例图:*
+![知乎示例](https://raw.githubusercontent.com/yes1am/PicBed/master/img/20211226230216.png)
+
+
+可以看到知乎专栏文章中的 `.Post-RichText` 就是 `h1,h2...h6` 等标题元素的容器元素
+
+##### 2.2.2.2 urlRegExp
+
+用来匹配网站，插件只在能够匹配 `urlRegExp` 的网站上生效，比如知乎专栏的链接都是 `https://zhuanlan.zhihu.com/p/xxx`
+
+*源码:*
+```js
+if(new RegExp(urlRegExp).test(window.location.href)) {
+// 插件生效
+} else {
+// 插件不生效
+}
+```
+
+##### 2.2.2.3 navHeight
+
+有些网站会有一直悬浮(*不会随着网页滚动而消失*)的导航栏，此时点击目录里的标题，滚动之后发现标题依然被导航栏遮挡，此时可以配置该参数使得滚动到更加合适的位置。
+
+*示例图:*
+![navHeight 示例](https://raw.githubusercontent.com/yes1am/PicBed/master/img/20211226225748.png)
+
+比如 Github 的导航栏高度是 `49px`，因此针对 Github 的网站应该配置 `-49`。
+
+##### 2.2.2.4 iframeSelector
+
+同 `markdownBodySelector` 一样，该参数用来指定 iframe 元素的 DOM 选择器。在有些网站(比如 `confluence` ) 上，真正的文章内容区域嵌套在 `<iframe>` 标签里面，此时要想正确的生成目录，则应该指定对应 iframe DOM 选择器。
+
+#### 2.2.3 新增配置
+
+默认只配置了[几个网站](https://github.com/yes1am/Outline/blob/master/src/constants.ts)的规则，想在别的网站生成目录可以自行配置规则:
+
+1. 右键点击插件，点击**选项**进入配置页面
+
+*示例图 1:*
+![右键点击插件](https://raw.githubusercontent.com/yes1am/PicBed/master/img/20211226232142.png)
+
+*示例图 2:*
+![配置详情页](https://raw.githubusercontent.com/yes1am/PicBed/master/img/20211226232311.png)
+
+2. 编辑配置(**严格的 JSON 格式**)，点击提交
+3. 进入你所配置的网站，刷新页面查看配置是否生效
+
+## 3. 效果展示
 
 **[知乎示例](https://zhuanlan.zhihu.com/p/41179053)**
 
@@ -11,65 +120,3 @@ A Chrome extension, generate outline for website, inspired by [Github Markdown O
 
 **[博客园示例](https://www.cnblogs.com/rubylouvre/p/4783966.html)**
 ![博客园](https://raw.githubusercontent.com/yes1am/PicBed/master/img/screely-1633248543403.png)
-
-## 1. 如何使用
-
-1. 通过 `git clone ...` or `Download ZIP` 下载该扩展
-2. 在 Chrome 地址栏输入 `chrome://extensions` 进入扩展页
-3. 开启开发者模式
-4. 点击加载 "已解压的扩展程序"，选择该扩展所在的路径
-5. 通过点击插件图标，切换是否启用该扩展
-6. 通过选项页，可配置插件所运行的网站页面(默认支持知乎专栏、Github、博客园)
-
-## 2. 选项页配置
-
-### 2.1 [默认配置](https://github.com/yes1am/Outline/blob/master/src/constants.ts#L3-L25)
-
-```json
-[
-  {
-    "markdownBodySelector": ".markdown-body",
-    "urlRegExp": "^https://github.com"
-  },
-  {
-    "markdownBodySelector": ".markdown-body",
-    "urlRegExp": "^https://github.com/.*/issues/"
-  },
-  {
-    "markdownBodySelector": "#cnblogs_post_body",
-    "urlRegExp": "^https://www.cnblogs.com/.*.html"
-  },
-  {
-    "markdownBodySelector": ".Post-RichText",
-    "urlRegExp": "^https://zhuanlan.zhihu.com/p/"
-  }
-]
-```
-
-### 2.2 参数解释:
-
-- **markdownBodySelector**
-```js
-// markdownBodySelector 参数用来确定文章的内容区域
-// 只有该区域的 header 标签会被选择出来
-// markdownBodySelector 可以是 id,class
-
-const container = document.querySelector(markdownBodySelector);
-const headers = container.querySelector('h1,h2,h3,h4,h5')
-```
-
-- **urlRegExp**
-
-```js
-// 用于判断当前网站是否含有配置项
-//
-if(new RegExp(urlRegExp).test(window.location.href)) {
-// extension work
-} else {
-// not work
-}
-```
-
-## 参考资料
-1. [Chrome 扩展开发教程](http://blog.haoji.me/chrome-plugin-develop.html)
-2. [Chrome Extension TypeScript Starter](https://github.com/chibat/chrome-extension-typescript-starter)

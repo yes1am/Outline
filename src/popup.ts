@@ -3,6 +3,7 @@ import { getStorageEnable, setStorageEnable } from './utils';
 const EXTENSION_ENABLED_TEXT = '插件已启用 (点击关闭)';
 const EXTENSION_DISABLED_TEXT = '插件已关闭 (点击启用)';
 const enableBtn = document.getElementById('EnableExtension');
+const reloadBtn = document.getElementById('Reload');
 
 function initWhenPageLoad() {
   getStorageEnable((enabled) => {
@@ -13,6 +14,16 @@ function initWhenPageLoad() {
       enableBtn!.classList.remove('item-select');
       enableBtn!.innerHTML = EXTENSION_DISABLED_TEXT;
     }
+  });
+}
+
+if (reloadBtn) {
+  reloadBtn.addEventListener('click', () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs[0]?.id !== undefined) {
+        chrome.tabs.sendMessage(tabs[0].id, { cmd: 'reload' });
+      }
+    });
   });
 }
 

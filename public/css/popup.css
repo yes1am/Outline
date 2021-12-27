@@ -66,3 +66,24 @@ body {
   margin-top: 3px;
   color: #aaa
 }
+
+.item-reload {
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.item-reload:hover {
+  border: 1px solid #BBCCDD;
+  border-radius: 3px;
+  background: -webkit-gradient(linear, 0 0, 0 100%, from(#fdfeff), to(#EEF2F9), color-stop(0.5, rgba(237, 242, 249, 1)), color-stop(0.33, rgba(237, 242, 249, 1)))
+}
+
+.item-reload div {
+  width: 23px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
