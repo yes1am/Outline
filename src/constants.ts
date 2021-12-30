@@ -4,12 +4,7 @@ export const DEFAULT_CONFIG_SITES: SiteItem[] = [
   {
     urlRegExp: '^https://github.com',
     markdownBodySelector: '.markdown-body',
-    navHeight: -49,
-  },
-  {
-    urlRegExp: '^https://github.com/.*/issues/',
-    markdownBodySelector: '.markdown-body',
-    navHeight: -49,
+    navHeight: 49,
   },
   {
     urlRegExp: '^https://www.cnblogs.com/.*.html',
@@ -18,7 +13,7 @@ export const DEFAULT_CONFIG_SITES: SiteItem[] = [
   {
     markdownBodySelector: '.Post-RichText',
     urlRegExp: '^https://zhuanlan.zhihu.com/p/',
-    navHeight: -52,
+    navHeight: 52,
   },
 ];
 

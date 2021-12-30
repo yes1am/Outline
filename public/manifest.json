@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Outline",
-  "version": "2.0.0",
+  "version": "2.2.0",
   "description": "Generate outline for website",
   "homepage_url": "https://github.com/yes1am/Outline",
   "author": "songjp1996@gmail.com",

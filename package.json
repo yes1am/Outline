@@ -20,6 +20,8 @@
   "homepage": "https://github.com/yes1am/Outline#readme",
   "dependencies": {
     "@types/chrome": "0.0.93",
+    "@types/scroll-into-view": "^1.16.0",
+    "scroll-into-view": "^1.16.0",
     "webpack-merge": "^4.2.2"
   },
   "devDependencies": {

@@ -3,6 +3,8 @@ import { SiteItem, HeaderInfo } from './types';
 import { getStorageSites, getStorageEnable, debug } from './utils';
 import { DEFAULT_EXTENSION_ACTIVE } from './constants';
 
+const scrollIntoView = require('scroll-into-view');
+
 const GITHUB_SOURCE_CODE_URL = 'https://github.com/yes1am/Outline';
 const HEADER_CLASS_PREFIX = 'CHROME_ESSAY_OUTLINE_EXTENSION_CLASS';
 const CONTAINER_ID = 'CHROME_ESSAY_OUTLINE_EXTENSION_CONTAINER';
@@ -20,9 +22,7 @@ interface RefType {
   [key: string]: HTMLDivElement
 }
 
-let refs: RefType = {
-
-};
+let refs: RefType = {};
 
 function removeContainerIfAlreadyExist() {
   let prevContainer = document.querySelector(`.${CONTAINER_ID}`);
@@ -198,9 +198,20 @@ function generateDom() {
       e.stopPropagation();
       const { index } = (e.target as HTMLElement)?.dataset;
       if (index !== undefined && refs[index]) {
-        const y = refs[index].getBoundingClientRect().top
-          + innerWindow.scrollY + (matchedSite!.navHeight || 0);
-        innerWindow.scrollTo({ top: y, behavior: 'smooth' });
+        // NOTE: 如果使用 useScrollIntoView 参数，则使用原生的 scrollIntoView 进行滚动
+        // 但是此时，可能会存在滚动定位不准确的问题，（即顶部悬浮的 navbar 会把标题挡住）
+        if (matchedSite?.useScrollIntoView) {
+          refs[index].scrollIntoView();
+        } else {
+          scrollIntoView(refs[index], {
+            time: 160,
+            align: {
+              top: 0,
+              left: 0,
+              topOffset: matchedSite!.navHeight || 0,
+            },
+          });
+        }
       }
     });
 

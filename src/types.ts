@@ -7,6 +7,8 @@ export interface SiteItem {
   navHeight?: number;
   // iframe 的选择器
   iframeSelector?: string;
+  // 是否使用原生的 scrollIntoView
+  useScrollIntoView?: boolean;
 }
 
 export interface StorageItem {
