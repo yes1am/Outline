@@ -99,10 +99,12 @@ if(new RegExp(urlRegExp).test(window.location.href)) {
 
 1. 右键点击插件，点击**选项**进入配置页面
 
-*示例图 1:*
+*示例图 1:*  
+
 ![右键点击插件](https://raw.githubusercontent.com/yes1am/PicBed/master/img/20211226232142.png)
 
-*示例图 2:*
+*示例图 2:*  
+
 ![配置详情页](https://raw.githubusercontent.com/yes1am/PicBed/master/img/20211226232311.png)
 
 2. 编辑配置(**严格的 JSON 格式**)，点击提交
